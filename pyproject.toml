@@ -35,5 +35,7 @@ dependencies = [
     "tenacity>=8.0.0",
 ]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 [tool.setuptools.packages.find]
 where = ["src"]
