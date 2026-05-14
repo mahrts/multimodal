@@ -97,5 +97,5 @@ One can access the web app with the following:
 ```bash
 uv run multimodal-moderation
 ```
-With the default settings in ```bash src/APP/gradio_app.py```, the web app looks like this: 
+With the default display messages in ```bash src/APP/gradio_app.py```, the web app looks like this: 
 ![Alt-tekst](snapshoot.png)
