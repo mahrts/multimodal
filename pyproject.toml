@@ -35,6 +35,11 @@ dependencies = [
     "tenacity>=8.0.0",
 ]
 
+[project.scripts]
+multimodal-moderation-api = "APP.fastapi_app:main"
+multimodal-moderation-chat = "APP.gradio_app:main"
+multimodal-moderation = "APP.app:main"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 [tool.setuptools.packages.find]

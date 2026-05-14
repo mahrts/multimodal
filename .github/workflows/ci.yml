@@ -34,3 +34,46 @@ jobs:
       - name: Run tests
         run: |
           python -m pytest
+
+  eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.12"
+
+      - name: Create temporary .env file
+        run: |
+          echo "USER_API_KEY=${{ secrets.USER_API_KEY }}" >> .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          echo "GOOGLE_GEMINI_BASE_URL=${{ secrets.GOOGLE_GEMINI_BASE_URL }}" >> .env
+          echo "DEFAULT_GOOGLE_MODEL=${{ secrets.DEFAULT_GOOGLE_MODEL }}" >> .env
+          echo "EVAL_JUDGE_MODEL=${{ secrets.EVAL_JUDGE_MODEL }}" >> .env
+          echo "EVAL_NUM_REPEATS=${{ secrets.EVAL_NUM_REPEATS }}" >> .env
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Evaluate audio moderation
+        run: |
+          uv run evals/audio/test_cases.py
+
+      - name: Evaluate image moderation
+        run: |
+          uv run evals/image/test_cases.py
+
+      - name: Evaluate text moderation
+        run: |
+          uv run evals/text/test_cases.py
+
+      - name: Evaluate video moderation
+        run: |
+          uv run evals/video/test_cases.py
