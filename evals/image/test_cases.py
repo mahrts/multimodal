@@ -1,3 +1,5 @@
+"""Code evaluation for image content moderation."""
+
 import sys
 from pathlib import Path
 from typing import List, Any
@@ -24,11 +26,9 @@ from evaluators import ImageModerationCheck
 # Get the models for evaluation
 judge_model, judge_settings = get_judge_model()
 
-
 class ImageInput(BaseModel):
     """Input schema for image moderation test cases."""
     image_file: str = Field(description="Path to image file to moderate")
-
 
 async def run_image_moderation(inputs: List[ImageInput]) -> ImageModerationResult:
     """Run the image moderation agent on a test input."""
@@ -37,7 +37,6 @@ async def run_image_moderation(inputs: List[ImageInput]) -> ImageModerationResul
     # Use the model under test (not the judge model!)
     model_choice = get_model_under_test()
     return await moderate_image(model_choice, image_bytes, media_type="image/jpeg")
-
 
 cases: List[Case[List[ImageInput], ImageModerationResult, Any]] = [
     Case(
@@ -79,20 +78,16 @@ cases: List[Case[List[ImageInput], ImageModerationResult, Any]] = [
         inputs=[ImageInput(image_file=get_test_data_path("low_quality_image.jpg"))],
         metadata={"category": "image_moderation"},
 
-        # TODO: define the evaluators for this case. We need:
-        # 1. An ImageModerationCheck that expects expected_pii=True, expected_disturbing=False, expected_low_quality=True
-        # 2. An LLMJudge that uses the judge_model and has a rubric that checks that the rationale describes specific quality
-        #    issues (blurry, pixelated, poor exposure, etc.)
         evaluators=(
             ImageModerationCheck(
-                expected_pii=...,  # TODO
-                expected_disturbing=..., # TODO
-                expected_low_quality=..., # TODO
+                expected_pii=False,
+                expected_disturbing=False,
+                expected_low_quality=True,
             ),
             LLMJudge(
                 model=judge_model,
                 rubric="The rationale should describe specific quality issues (blurry, pixelated, poor exposure, etc.)",
-                include_input=...,  # TODO: in this case it is probably useful to include the input image for contextue
+                include_input=True,
             ),
         ),
     ),
@@ -106,7 +101,6 @@ image_dataset = Dataset[List[ImageInput], ImageModerationResult, Any](
         HasRationale(),
     ],
 )
-
 
 async def main():
     retry_config = RetryConfig(

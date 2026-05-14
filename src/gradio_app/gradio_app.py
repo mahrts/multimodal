@@ -144,6 +144,19 @@ def _call_media_moderation(media: str, span: trace.Span) -> Tuple[dict[str, Any]
 
     return result, feedback, content_type, mime_type
 
+def _add_feedback_span(feedback_message: str, span: trace.Span = None) -> None:
+    """
+    Create a dedicated feedback span for tracing.
+    
+    Args:
+        feedback_message: The feedback message to record
+        span: Optional parent span to link to
+    """
+    with tracer.start_as_current_span("feedback") as feedback_span:
+        feedback_span.set_attribute("feedback.message", feedback_message)
+        if span:
+            feedback_span.set_attribute("parent_span_name", span.name)
+            feedback_span.set_attribute("parent_span_id", str(span.context.span_id))
 
 def check_content_safety(*, text: str | None = None, media: str | None = None) -> Tuple[bool, str, str]:
     """
@@ -175,18 +188,23 @@ def check_content_safety(*, text: str | None = None, media: str | None = None) -
         span.set_attributes({f"output.{k}": v for k, v in result.items()})
 
         # Update span name now that we know the content type
-        span.update_name(f"moderate_{content_type}")
+        #span.update_name(f"moderate_{content_type}")
 
     # Check if any unsafe flags were set by the moderation service
     config = MODERATION_CONFIG[content_type]
+    is_safe = True
+    feedback_message = feedback
+
     for flag in config["unsafe_flags"]:
         if result[flag]:
-            # Content is unsafe - return False with feedback
-            return False, f"Content flagged: {feedback}", mime_type
+            # Content is unsafe
+            is_safe = False
+            feedback_message = f"Content flagged: {feedback}"
+            break
 
-    # Content is safe - return True with feedback
-    return True, feedback, mime_type
-
+    # Add feedback span for tracking moderation decisions
+    _add_feedback_span(feedback_message, span)
+    return is_safe, feedback_message, mime_type
 
 class ChatSessionWithTracing:
     """
@@ -249,10 +267,13 @@ class ChatSessionWithTracing:
                         feedback = f"⚠️ Content flagged: {safety_message}"
                         response = "[This content was flagged by moderation and not sent to the AI. Please try again.]"
 
+                        # Add to chat_turn span
                         span.set_attribute("feedback", feedback)
 
-                        return response, past_messages, feedback
+                        # Add dedicated feedback span for tracing
+                        _add_feedback_span(feedback, span)
 
+                        return response, past_messages, feedback
                     # Content safe - add to prompt
                     prompt_parts.append(value)
 
@@ -272,6 +293,12 @@ class ChatSessionWithTracing:
                                 response = (
                                     "[This content was flagged by moderation and not sent to the AI. Please try again.]"
                                 )
+
+                                # Add to chat_turn span
+                                span.set_attribute("feedback", feedback)
+
+                                # Add dedicated feedback span for tracing
+                                _add_feedback_span(feedback, span)
 
                                 return response, past_messages, feedback
 

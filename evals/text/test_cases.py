@@ -66,16 +66,7 @@ async def run_text_moderation(inputs: List[TextInput]) -> TextModerationResult:
     model_choice = get_model_under_test()
     return await moderate_text(model_choice, text)
 
-
-# Test Cases
-# Each case defines:
-# - name: Identifier for this test
-# - inputs: The test data (path to file)
-# - evaluators: How to check if the output is correct
-#   - TextModerationCheck: Checks boolean flags match expected values
-#   - LLMJudge: Uses an LLM to evaluate if the rationale is good
 cases: List[Case[List[TextInput], TextModerationResult, Any]] = [
-    # TODO: fill in the missing
     Case(
         name="professional_text",
         inputs=[TextInput(text_file=get_test_data_path("professional_text.txt"))],
