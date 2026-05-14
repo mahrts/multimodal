@@ -1,7 +1,7 @@
 # 🛡️ Multimodal AI for content Moderation System
 This is a multi-modal content moderation system that makes customer service interactions remain more professional, more secure, and high-quality by auditing contents before sending them to users.
 
-[One can just tailor the ```bash src/APP/gradio_app.py``` file to align the web application’s interface&branding with the specific service (e.g. company name, welcome message, ...)].
+[One can just tailor the ```src/APP/gradio_app.py``` file to align the web application’s interface&branding with the specific service (e.g. company name, welcome message, ...)].
 
 # 🚀 Overview
 The system acts as a gatekeeper. It moderates text, image, audio, and video content to detect PII, unprofessional tone, and low-quality media, providing instant feedback and blocking harmful interactions.
