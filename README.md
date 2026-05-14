@@ -73,6 +73,8 @@ pip install -r requirements.txt && pip install -e .
 Create .env file with the following
 
 ```bash
+USER_API_KEY=<user_api_key> #Can be your gemini_api_key for running locally.
+
 GEMINI_API_KEY=<YOUR_GEMINI_API_KEY>
 
 # FOLLOWING are default value, can be changed
@@ -87,12 +89,8 @@ EVAL_NUM_REPEATS=5
 ```
 
 ### 3- Run the Application
-Running the application needs an openAI API key
 
-```bash
-export OPENAI_API_KEY="your_api_key_here"
-```
-Then, access the app with the following:
+One can access the web app with the following:
 
 ```bash
 uv run multimodal-moderation
