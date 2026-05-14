@@ -97,7 +97,5 @@ One can access the web app with the following:
 ```bash
 uv run multimodal-moderation
 ```
-
-## Acknowledgement
-
-This project was developed as part of the Udacity Generative AI Nanodegree program.
+With the default settings in ```bash src/APP/gradio_app.py```, the web app looks like this: 
+![Alt-tekst](snapshoot.png)
