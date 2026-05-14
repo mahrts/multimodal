@@ -33,7 +33,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest
+          python -m pytest tests/
 
   eval:
     runs-on: ubuntu-latest
