@@ -1,5 +1,5 @@
-# 🛡️AI Moderation System
-This is a multi-modal content moderation system that ensures customer service interactions remain professional, secure, and high-quality by auditing communications between trainee agents and AI-simulated customers in real-time.
+# 🛡️ Multimodal AI for content Moderation System
+This is a multi-modal content moderation system that makes customer service interactions remain more professional, more secure, and high-quality by auditing contents before sending them to users.
 
 # 🚀 Overview
 The system acts as a gatekeeper. It moderates text, image, audio, and video content to detect PII, unprofessional tone, and low-quality media, providing instant feedback and blocking harmful interactions.
